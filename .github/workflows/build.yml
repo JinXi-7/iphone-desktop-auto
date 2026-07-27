@@ -123,3 +123,46 @@ jobs:
         with:
           name: 一键拨号-android
           path: 一键拨号-android.apk
+
+  build-ios:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 安装 XcodeGen
+        run: brew install xcodegen
+
+      - name: 生成 Xcode 项目
+        working-directory: ios-app
+        run: xcodegen generate
+
+      - name: 解析 SPM 依赖
+        working-directory: ios-app
+        run: |
+          xcodebuild -project DialerApp.xcodeproj \
+            -scheme DialerApp \
+            -resolvePackageDependencies
+
+      - name: 编译 iOS App
+        working-directory: ios-app
+        run: |
+          xcodebuild -project DialerApp.xcodeproj \
+            -scheme DialerApp \
+            -configuration Debug \
+            -destination 'generic/platform=iOS' \
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            DEVELOPMENT_TEAM=""
+
+      - name: 压缩 App
+        run: |
+          cd ios-app/build/Build/Products/Debug-iphoneos
+          zip -r ../../../../一键拨号-ios.zip DialerApp.app
+
+      - name: 上传产物
+        uses: actions/upload-artifact@v4
+        with:
+          name: 一键拨号-ios
+          path: 一键拨号-ios.zip
