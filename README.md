@@ -14,6 +14,7 @@
 | macOS | `一键拨号-macos.zip` | 解压后拖到「应用程序」 |
 | Linux | `一键拨号-linux.tar.gz` | 解压后终端运行 |
 | Android | `一键拨号-android.apk` | 手机安装，允许未知来源 |
+| iOS | `一键拨号-ios.zip` | 解压后用 Xcode/AltStore 侧载安装 |
 
 ## 功能
 
