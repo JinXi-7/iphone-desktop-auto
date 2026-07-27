@@ -2,8 +2,11 @@ name: 多平台打包
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, master ]
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   build:
@@ -13,13 +16,10 @@ jobs:
         include:
           - os: windows-latest
             artifact_name: 一键拨号-windows
-            archive: zip
           - os: macos-latest
             artifact_name: 一键拨号-macos
-            archive: zip
           - os: ubuntu-latest
             artifact_name: 一键拨号-linux
-            archive: tar
 
     steps:
       - uses: actions/checkout@v4
@@ -40,91 +40,52 @@ jobs:
           pip install -r requirements.txt
           pip install pyinstaller
 
-      - name: 打包 Windows
-        if: runner.os == 'Windows'
+      - name: 打包
+        shell: bash
         run: |
-          pyinstaller --name "一键拨号" --windowed --noconfirm `
-            --add-data "templates;templates" `
-            --add-data "static;static" `
-            --hidden-import "clr_loader" `
-            --hidden-import "pythonnet" `
-            --hidden-import "webview.platforms.edgechromium" `
-            --hidden-import "webview.platforms.winforms" `
-            --hidden-import "requests" --hidden-import "urllib3" `
-            --hidden-import "charset_normalizer" --hidden-import "certifi" `
-            --hidden-import "openpyxl" --hidden-import "et_xmlfile" `
-            --hidden-import "openpyxl.cell._writer" `
-            --hidden-import "openpyxl.reader.excel" `
-            --hidden-import "openpyxl.workbook._writer" `
-            main.py
-
-      - name: 打包 macOS
-        if: runner.os == 'macOS'
-        run: |
+          if [ "$RUNNER_OS" = "Windows" ]; then
+            SEP=";"
+            HIDDEN="--hidden-import clr_loader --hidden-import pythonnet --hidden-import webview.platforms.edgechromium --hidden-import webview.platforms.winforms"
+          elif [ "$RUNNER_OS" = "macOS" ]; then
+            SEP=":"
+            HIDDEN="--hidden-import webview.platforms.cocoa --hidden-import webview.platforms.webkit"
+          else
+            SEP=":"
+            HIDDEN="--hidden-import webview.platforms.gtk"
+          fi
           pyinstaller --name "一键拨号" --windowed --noconfirm \
-            --add-data "templates:templates" \
-            --add-data "static:static" \
-            --hidden-import "webview.platforms.cocoa" \
-            --hidden-import "webview.platforms.webkit" \
-            --hidden-import "requests" --hidden-import "urllib3" \
-            --hidden-import "charset_normalizer" --hidden-import "certifi" \
-            --hidden-import "openpyxl" --hidden-import "et_xmlfile" \
-            --hidden-import "openpyxl.cell._writer" \
-            --hidden-import "openpyxl.reader.excel" \
-            --hidden-import "openpyxl.workbook._writer" \
-            main.py
-
-      - name: 打包 Linux
-        if: runner.os == 'Linux'
-        run: |
-          pyinstaller --name "一键拨号" --windowed --noconfirm \
-            --add-data "templates:templates" \
-            --add-data "static:static" \
-            --hidden-import "webview.platforms.gtk" \
-            --hidden-import "requests" --hidden-import "urllib3" \
-            --hidden-import "charset_normalizer" --hidden-import "certifi" \
-            --hidden-import "openpyxl" --hidden-import "et_xmlfile" \
-            --hidden-import "openpyxl.cell._writer" \
-            --hidden-import "openpyxl.reader.excel" \
-            --hidden-import "openpyxl.workbook._writer" \
+            --add-data "templates${SEP}templates" \
+            --add-data "static${SEP}static" \
+            $HIDDEN \
+            --hidden-import requests --hidden-import urllib3 \
+            --hidden-import charset_normalizer --hidden-import certifi \
+            --hidden-import openpyxl --hidden-import et_xmlfile \
+            --hidden-import openpyxl.cell._writer \
+            --hidden-import openpyxl.reader.excel \
+            --hidden-import openpyxl.workbook._writer \
             main.py
 
       - name: 复制配置文件
         shell: bash
         run: |
-          cp .env.example dist/一键拨号/ 2>/dev/null || true
-          cp contacts_template.xlsx dist/一键拨号/ 2>/dev/null || true
+          cp .env.example "dist/一键拨号/" 2>/dev/null || true
+          cp contacts_template.xlsx "dist/一键拨号/" 2>/dev/null || true
 
-      - name: 打包 Windows zip
-        if: runner.os == 'Windows'
+      - name: 压缩产物
+        shell: bash
         run: |
-          Compress-Archive -Path "dist\一键拨号\*" -DestinationPath "一键拨号-windows.zip"
-
-      - name: 打包 macOS zip
-        if: runner.os == 'macOS'
-        run: |
-          cd dist && zip -r ../一键拨号-macos.zip 一键拨号.app
-
-      - name: 打包 Linux tar.gz
-        if: runner.os == 'Linux'
-        run: |
-          cd dist && tar czf ../一键拨号-linux.tar.gz 一键拨号
+          if [ "$RUNNER_OS" = "Windows" ]; then
+            cd dist && 7z a ../../${{ matrix.artifact_name }}.zip 一键拨号
+          elif [ "$RUNNER_OS" = "macOS" ]; then
+            cd dist && zip -r ../${{ matrix.artifact_name }}.zip 一键拨号.app
+          else
+            cd dist && tar czf ../${{ matrix.artifact_name }}.tar.gz 一键拨号
+          fi
 
       - name: 上传产物
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.artifact_name }}
           path: |
-            一键拨号-windows.zip
-            一键拨号-macos.zip
-            一键拨号-linux.tar.gz
-
-      - name: 发布 Release
-        if: github.event_name == 'workflow_dispatch'
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: v1.0.${{ github.run_number }}
-          files: |
-            一键拨号-windows.zip
-            一键拨号-macos.zip
-            一键拨号-linux.tar.gz
+            *.zip
+            *.tar.gz
