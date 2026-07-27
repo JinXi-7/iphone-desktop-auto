@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">一键拨号助手</string>
+    <string name="usage_guide">使用说明：\n1. 点击「启动服务」开启后台拨号服务\n2. 在桌面端软件中填入上方显示的 IP 地址\n3. 桌面端点击联系人即可自动拨号\n4. 服务保持运行，手机不要清理后台</string>
+</resources>

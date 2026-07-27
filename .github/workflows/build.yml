@@ -1,0 +1,130 @@
+name: 多平台打包
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            artifact_name: 一键拨号-windows
+            archive: zip
+          - os: macos-latest
+            artifact_name: 一键拨号-macos
+            archive: zip
+          - os: ubuntu-latest
+            artifact_name: 一键拨号-linux
+            archive: tar
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 设置 Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 安装 Linux 系统依赖（GTK）
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-gi python3-gi-cairo gir1.2-gtk-3.0 gir1.2-webkit2-4.1
+
+      - name: 安装 Python 依赖
+        run: |
+          pip install -r requirements.txt
+          pip install pyinstaller
+
+      - name: 打包 Windows
+        if: runner.os == 'Windows'
+        run: |
+          pyinstaller --name "一键拨号" --windowed --noconfirm `
+            --add-data "templates;templates" `
+            --add-data "static;static" `
+            --hidden-import "clr_loader" `
+            --hidden-import "pythonnet" `
+            --hidden-import "webview.platforms.edgechromium" `
+            --hidden-import "webview.platforms.winforms" `
+            --hidden-import "requests" --hidden-import "urllib3" `
+            --hidden-import "charset_normalizer" --hidden-import "certifi" `
+            --hidden-import "openpyxl" --hidden-import "et_xmlfile" `
+            --hidden-import "openpyxl.cell._writer" `
+            --hidden-import "openpyxl.reader.excel" `
+            --hidden-import "openpyxl.workbook._writer" `
+            main.py
+
+      - name: 打包 macOS
+        if: runner.os == 'macOS'
+        run: |
+          pyinstaller --name "一键拨号" --windowed --noconfirm \
+            --add-data "templates:templates" \
+            --add-data "static:static" \
+            --hidden-import "webview.platforms.cocoa" \
+            --hidden-import "webview.platforms.webkit" \
+            --hidden-import "requests" --hidden-import "urllib3" \
+            --hidden-import "charset_normalizer" --hidden-import "certifi" \
+            --hidden-import "openpyxl" --hidden-import "et_xmlfile" \
+            --hidden-import "openpyxl.cell._writer" \
+            --hidden-import "openpyxl.reader.excel" \
+            --hidden-import "openpyxl.workbook._writer" \
+            main.py
+
+      - name: 打包 Linux
+        if: runner.os == 'Linux'
+        run: |
+          pyinstaller --name "一键拨号" --windowed --noconfirm \
+            --add-data "templates:templates" \
+            --add-data "static:static" \
+            --hidden-import "webview.platforms.gtk" \
+            --hidden-import "requests" --hidden-import "urllib3" \
+            --hidden-import "charset_normalizer" --hidden-import "certifi" \
+            --hidden-import "openpyxl" --hidden-import "et_xmlfile" \
+            --hidden-import "openpyxl.cell._writer" \
+            --hidden-import "openpyxl.reader.excel" \
+            --hidden-import "openpyxl.workbook._writer" \
+            main.py
+
+      - name: 复制配置文件
+        shell: bash
+        run: |
+          cp .env.example dist/一键拨号/ 2>/dev/null || true
+          cp contacts_template.xlsx dist/一键拨号/ 2>/dev/null || true
+
+      - name: 打包 Windows zip
+        if: runner.os == 'Windows'
+        run: |
+          Compress-Archive -Path "dist\一键拨号\*" -DestinationPath "一键拨号-windows.zip"
+
+      - name: 打包 macOS zip
+        if: runner.os == 'macOS'
+        run: |
+          cd dist && zip -r ../一键拨号-macos.zip 一键拨号.app
+
+      - name: 打包 Linux tar.gz
+        if: runner.os == 'Linux'
+        run: |
+          cd dist && tar czf ../一键拨号-linux.tar.gz 一键拨号
+
+      - name: 上传产物
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact_name }}
+          path: |
+            一键拨号-windows.zip
+            一键拨号-macos.zip
+            一键拨号-linux.tar.gz
+
+      - name: 发布 Release
+        if: github.event_name == 'workflow_dispatch'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.0.${{ github.run_number }}
+          files: |
+            一键拨号-windows.zip
+            一键拨号-macos.zip
+            一键拨号-linux.tar.gz

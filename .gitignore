@@ -1,0 +1,37 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# PyInstaller
+dist/
+build/
+*.spec
+
+# 数据文件
+contacts.db
+*.log
+
+# 平台工具
+platform-tools/
+
+# 环境配置（含敏感信息）
+.env
+
+# IDE
+.idea/
+.vscode/
+
+# 临时文件
+*.tmp
+apk_server.py
+upload_apk.py
+tunnel.py
+yes.txt
+build-log.txt
+upload_result.txt
+tunnel_out.txt
+tunnel_err.txt
+exe_stdout.txt
+exe_stderr.txt
