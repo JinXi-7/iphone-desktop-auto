@@ -1,6 +1,19 @@
 # 一键拨号 (iPhone Desktop Auto)
 
-> 电脑点击，手机自动拨号 -- Windows PC 通过局域网 HTTP 直连安卓手机 App，桌面软件一键触发全自动拨号。
+> 电脑点击，手机自动拨号 -- 局域网 HTTP 直连安卓手机 App，桌面软件一键触发全自动拨号。
+
+[![多平台打包](https://github.com/JinXi-7/iphone-desktop-auto/actions/workflows/build.yml/badge.svg)](https://github.com/JinXi-7/iphone-desktop-auto/actions/workflows/build.yml)
+
+## 下载
+
+从 [GitHub Actions](https://github.com/JinXi-7/iphone-desktop-auto/actions/workflows/build.yml) 下载最新构建产物：
+
+| 平台 | 文件 | 说明 |
+|------|------|------|
+| Windows | `一键拨号-windows.zip` | 解压后双击 `一键拨号.exe` |
+| macOS | `一键拨号-macos.zip` | 解压后拖到「应用程序」 |
+| Linux | `一键拨号-linux.tar.gz` | 解压后终端运行 |
+| Android | `一键拨号-android.apk` | 手机安装，允许未知来源 |
 
 ## 功能
 
