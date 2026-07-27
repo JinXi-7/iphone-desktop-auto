@@ -27,10 +27,9 @@ class DialServer: ObservableObject {
 
         // POST /dial - 拨号
         server?["/dial"] = { request in
-            // 解析请求体
-            guard let body = request.body,
-                  let data = body.data(using: .utf8),
-                  let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+            // 解析请求体（Swifter body 为 [UInt8] 类型）
+            let data = Data(request.body)
+            guard let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
                   let phone = json["phone"] as? String
             else {
                 return .badRequest(.json([
@@ -140,12 +139,12 @@ enum SilentAudioGenerator {
         var data = Data()
 
         // RIFF header
-        data.append("RIFF".data(using: .ascii)!)
+        data.append(Data("RIFF".utf8))
         appendUInt32(&data, UInt32(36 + dataSize))
-        data.append("WAVE".data(using: .ascii)!)
+        data.append(Data("WAVE".utf8))
 
         // fmt chunk
-        data.append("fmt ".data(using: .ascii)!)
+        data.append(Data("fmt ".utf8))
         appendUInt32(&data, 16)              // subchunk1 size
         appendUInt16(&data, 1)               // PCM
         appendUInt16(&data, 1)               // mono
@@ -155,7 +154,7 @@ enum SilentAudioGenerator {
         appendUInt16(&data, 16)              // bits per sample
 
         // data chunk
-        data.append("data".data(using: .ascii)!)
+        data.append(Data("data".utf8))
         appendUInt32(&data, UInt32(dataSize))
         data.append(Data(count: dataSize))  // 全零 = 静音
 
