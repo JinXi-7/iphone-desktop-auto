@@ -170,3 +170,39 @@ jobs:
         with:
           name: 一键拨号-ios
           path: 一键拨号-ios.zip
+
+  release:
+    needs: [build, build-android, build-ios]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+
+      - name: 汇集所有平台产物
+        run: |
+          find . -type f \( -name "*.zip" -o -name "*.tar.gz" -o -name "*.apk" \) -exec mv {} . \;
+          ls -la *.zip *.tar.gz *.apk 2>/dev/null || true
+
+      - name: 发布到 GitHub Release（永久免登录直链）
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1
+          name: 最新构建
+          body: |
+            自动构建的最新产物，点击对应文件直接下载。
+
+            | 平台 | 文件 |
+            |------|------|
+            | Windows | 一键拨号-windows.zip |
+            | macOS | 一键拨号-macos.zip |
+            | Linux | 一键拨号-linux.tar.gz |
+            | Android | 一键拨号-android.apk |
+            | iOS | 一键拨号-ios.zip |
+          make_latest: true
+          files: |
+            一键拨号-windows.zip
+            一键拨号-macos.zip
+            一键拨号-linux.tar.gz
+            一键拨号-android.apk
+            一键拨号-ios.zip
