@@ -26,6 +26,14 @@
                 <div id="status-info">
                     <p class="text-muted mb-0">检测中...</p>
                 </div>
+                <!-- 手机IP输入框 -->
+                <div class="input-group input-group-sm mt-3" id="ip-config-group">
+                    <span class="input-group-text">手机IP</span>
+                    <input type="text" class="form-control" id="app-host-input" placeholder="如 192.168.1.100">
+                    <button class="btn btn-success" onclick="saveAppHost()" id="save-ip-btn">
+                        <i class="bi bi-check-lg"></i> 连接
+                    </button>
+                </div>
                 <button class="btn btn-primary btn-sm mt-2 d-none" id="connect-btn" onclick="connectDevice()">
                     <i class="bi bi-arrow-repeat"></i> 重新检测
                 </button>
@@ -143,6 +151,9 @@
 
             if (data.mode === 'app') {
                 title.textContent = '手机 App 连接状态';
+                // 从 app_url 解析当前 IP 填入输入框
+                const match = data.app_url.match(/http:\/\/(\d+\.\d+\.\d+\.\d+)/);
+                if (match) document.getElementById('app-host-input').value = match[1];
                 if (data.connected) {
                     badge.className = 'badge bg-success';
                     badge.textContent = '已连接';
@@ -185,6 +196,32 @@
                     connectBtn.innerHTML = '<i class="bi bi-plug-fill"></i> 连接设备';
                 }
             }
+        }
+
+        // 保存手机IP并测试连接
+        async function saveAppHost() {
+            const host = document.getElementById('app-host-input').value.trim();
+            if (!host) {
+                showDialResult(false, '请输入手机 IP 地址');
+                return;
+            }
+            const btn = document.getElementById('save-ip-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> 连接中...';
+            try {
+                const res = await fetch('/api/config', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ app_host: host })
+                });
+                const data = await res.json();
+                showDialResult(data.success, data.message);
+                fetchStatus();
+            } catch (e) {
+                showDialResult(false, '请求失败: ' + e.message);
+            }
+            btn.disabled = false;
+            btn.innerHTML = '<i class="bi bi-check-lg"></i> 连接';
         }
 
         // 连接设备

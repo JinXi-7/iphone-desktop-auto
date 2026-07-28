@@ -42,3 +42,29 @@ class Config:
 
     # App 完整 URL
     APP_URL: str = f"http://{APP_HOST}:{APP_PORT}"
+
+
+def update_app_host(new_host: str) -> bool:
+    """运行时更新 APP_HOST 并持久化到 .env 文件。"""
+    new_host = _validate_ip(new_host, "")
+    if not new_host:
+        return False
+    Config.APP_HOST = new_host
+    Config.APP_URL = f"http://{new_host}:{Config.APP_PORT}"
+    # 写入 .env
+    env_path = data_path(".env")
+    lines = []
+    found = False
+    if os.path.exists(env_path):
+        with open(env_path, "r", encoding="utf-8") as f:
+            for line in f:
+                if line.startswith("APP_HOST="):
+                    lines.append(f"APP_HOST={new_host}\n")
+                    found = True
+                else:
+                    lines.append(line)
+    if not found:
+        lines.append(f"APP_HOST={new_host}\n")
+    with open(env_path, "w", encoding="utf-8") as f:
+        f.writelines(lines)
+    return True

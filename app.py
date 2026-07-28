@@ -7,7 +7,7 @@ from typing import Any
 from flask import Flask, render_template, jsonify, request
 
 from paths import resource_path
-from config import Config
+from config import Config, update_app_host
 from dialer import (
     check_adb_available,
     get_adb_devices,
@@ -86,6 +86,34 @@ def api_connect():
 
     success, message = connect_device()
     return jsonify({"success": success, "message": message})
+
+
+@app.route("/api/config", methods=["POST"])
+def api_config():
+    """更新手机 App 的 IP 地址并测试连接。"""
+    data: dict[str, Any] | None = request.get_json()
+    if not data or not data.get("app_host"):
+        return jsonify({"success": False, "message": "请提供 IP 地址"}), 400
+
+    host = str(data["app_host"]).strip()
+    if not update_app_host(host):
+        return jsonify({"success": False, "message": "IP 地址格式无效，请输入正确的 IPv4 地址"}), 400
+
+    app_ok = check_app_available()
+    if app_ok:
+        app_info = get_app_status()
+        device = app_info.get("device", "未知") if app_info else "未知"
+        return jsonify({
+            "success": True,
+            "message": f"连接成功！设备：{device}",
+            "app_url": Config.APP_URL,
+            "device": device,
+        })
+    return jsonify({
+        "success": False,
+        "message": f"IP 已更新为 {Config.APP_HOST}，但无法连接手机 App，请确认 App 已启动",
+        "app_url": Config.APP_URL,
+    })
 
 
 @app.route("/api/dial", methods=["POST"])

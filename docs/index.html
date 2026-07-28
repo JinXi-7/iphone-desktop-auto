@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>一键拨号助手 - 下载</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: #fff;
+            border-radius: 24px;
+            max-width: 480px;
+            width: 100%;
+            padding: 40px 30px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+        }
+        .logo {
+            width: 96px;
+            height: 96px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 24px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+        }
+        h1 {
+            font-size: 24px;
+            color: #1a1a2e;
+            margin-bottom: 8px;
+        }
+        .subtitle {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+        .platform-card {
+            border: 2px solid #f0f0f0;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: block;
+        }
+        .platform-card:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(102,126,234,0.2);
+        }
+        .platform-card.android { border-left: 4px solid #3ddc84; }
+        .platform-card.windows { border-left: 4px solid #00a4ef; }
+        .platform-card.ios { border-left: 4px solid #007aff; }
+        .platform-icon { font-size: 32px; margin-bottom: 8px; }
+        .platform-name { font-size: 16px; font-weight: 600; color: #1a1a2e; }
+        .platform-desc { font-size: 13px; color: #888; margin-top: 4px; }
+        .platform-size { font-size: 12px; color: #aaa; margin-top: 2px; }
+        .download-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
+            text-decoration: none;
+            padding: 12px 40px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 600;
+            margin-top: 8px;
+            transition: all 0.3s;
+        }
+        .download-btn:hover { transform: scale(1.05); box-shadow: 0 6px 20px rgba(102,126,234,0.4); }
+        .instructions {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #f0f0f0;
+            text-align: left;
+        }
+        .instructions h3 { font-size: 14px; color: #1a1a2e; margin-bottom: 12px; }
+        .instructions ol { padding-left: 20px; }
+        .instructions li { font-size: 13px; color: #666; margin-bottom: 6px; line-height: 1.6; }
+        .footer { margin-top: 24px; font-size: 12px; color: #ccc; }
+        .badge {
+            display: inline-block;
+            background: #3ddc84;
+            color: #fff;
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-left: 6px;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">📞</div>
+        <h1>一键拨号助手</h1>
+        <p class="subtitle">电脑点击，手机自动拨号 — 局域网互联，无需开发者模式</p>
+
+        <!-- 安卓下载 -->
+        <a href="一键拨号助手.apk" download class="platform-card android">
+            <div class="platform-icon">🤖</div>
+            <div class="platform-name">安卓 Android <span class="badge">推荐</span></div>
+            <div class="platform-desc">直接下载安装，支持所有安卓手机</div>
+            <div class="platform-size">APK · 5.4 MB · 点击下载</div>
+        </a>
+
+        <!-- Windows 下载 -->
+        <a href="https://github.com/JinXi-7/iphone-desktop-auto/actions/workflows/build.yml" target="_blank" class="platform-card windows">
+            <div class="platform-icon">💻</div>
+            <div class="platform-name">Windows 电脑端</div>
+            <div class="platform-desc">点击前往 GitHub 下载 Windows 版</div>
+            <div class="platform-size">EXE · 约 35 MB</div>
+        </a>
+
+        <!-- iOS 下载 -->
+        <a href="https://github.com/JinXi-7/iphone-desktop-auto/actions/workflows/build.yml" target="_blank" class="platform-card ios">
+            <div class="platform-icon">🍎</div>
+            <div class="platform-name">iOS iPhone 版</div>
+            <div class="platform-desc">需用 Xcode 或 AltStore 侧载安装</div>
+            <div class="platform-size">APP · 约 1 MB</div>
+        </a>
+
+        <div class="instructions">
+            <h3>📋 安装步骤（安卓）</h3>
+            <ol>
+                <li>点击上方「安卓 Android」下载 APK 文件</li>
+                <li>下载完成后点击安装</li>
+                <li>如果提示「未知来源应用」，点击「允许」</li>
+                <li>打开 App，点击「启动服务」</li>
+                <li>授权拨号权限和通知权限</li>
+                <li>记下 App 显示的 IP 地址</li>
+                <li>在电脑端软件中输入该 IP，点击连接</li>
+                <li>连接成功后即可一键拨号 🎉</li>
+            </ol>
+        </div>
+
+        <div class="footer">
+            版本 v1.0 · 更新于 2026-07<br>
+            <a href="https://github.com/JinXi-7/iphone-desktop-auto" style="color:#aaa;">GitHub 仓库</a>
+        </div>
+    </div>
+</body>
+</html>
