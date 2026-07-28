@@ -97,17 +97,17 @@ section.center{text-align:center}
 .stat-label{color:var(--dim);font-size:14px;margin-top:12px;letter-spacing:.06em}
 .stat-arrow{font-size:40px;color:var(--violet);align-self:center;margin-bottom:24px}
 .stat-badge{display:inline-block;margin-top:16px;padding:8px 22px;border-radius:999px;background:var(--grad);color:#fff;font-size:15px;font-weight:600;box-shadow:0 8px 24px rgba(139,92,246,.4)}
-#sell{overflow:hidden;perspective:1500px}
+#sell{perspective:1200px}
 #sell .head{max-width:760px;margin:0 auto 70px;text-align:center}
 #sell .head .lead{margin:0 auto}
-#sell-track{display:flex;gap:28px;will-change:transform;padding:10px 6vw}
-.sell-card{flex:none;width:80vw;max-width:560px;min-height:360px;border:1px solid var(--line);border-radius:24px;padding:48px;background:linear-gradient(160deg,rgba(255,255,255,.05),rgba(255,255,255,.01));backdrop-filter:blur(6px);display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden;transform-style:preserve-3d;will-change:transform}
+#sell-track{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px;max-width:1200px;margin:0 auto;padding:0 2vw}
+.sell-card{border:1px solid var(--line);border-radius:24px;padding:38px 32px;background:linear-gradient(160deg,rgba(255,255,255,.05),rgba(255,255,255,.01));backdrop-filter:blur(6px);display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden;min-height:300px;transform-style:preserve-3d;will-change:transform}
 .sell-card::before{content:"";position:absolute;top:-40%;right:-20%;width:320px;height:320px;border-radius:50%;background:var(--grad);filter:blur(75px);opacity:.28}
 .sell-num{font-family:'JetBrains Mono',monospace;color:var(--muted);font-size:13px}
-.sell-ico{width:58px;height:58px;border-radius:16px;background:var(--grad);display:flex;align-items:center;justify-content:center;margin-bottom:26px;box-shadow:0 10px 28px rgba(139,92,246,.45)}
-.sell-ico svg{color:#fff;width:28px;height:28px}
-.sell-card h3{font-size:28px;font-weight:700;margin-bottom:14px}
-.sell-card p{color:var(--dim);font-size:16px}
+.sell-ico{width:54px;height:54px;border-radius:16px;background:var(--grad);display:flex;align-items:center;justify-content:center;margin-bottom:22px;box-shadow:0 10px 28px rgba(139,92,246,.45)}
+.sell-ico svg{color:#fff;width:26px;height:26px}
+.sell-card h3{font-size:22px;font-weight:700;margin-bottom:12px}
+.sell-card p{color:var(--dim);font-size:15px}
 #how .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:40px;margin-top:80px;position:relative}
 .step-line{position:absolute;top:40px;left:16%;right:16%;height:2px;background:var(--line)}
 .step-line-fill{position:absolute;top:0;left:0;height:100%;width:0;background:var(--grad);transition:width 1.8s ease}
@@ -469,18 +469,11 @@ gsap.utils.toArray('.reveal').forEach(el=>{gsap.to(el,{opacity:1,y:0,duration:1.
 })();
 
 (function(){
-  const track=document.querySelector('#sell-track');if(!track)return;
-  const amount=()=>Math.max(0,track.scrollWidth-window.innerWidth);
-  const tween=gsap.to(track,{x:()=>-amount(),ease:'none',scrollTrigger:{trigger:'#sell',start:'top top',end:()=>'+='+amount(),pin:true,scrub:2,invalidateOnRefresh:true}});
   const cards=gsap.utils.toArray('.sell-card');
-  cards.forEach(card=>{
-    ScrollTrigger.create({
-      trigger:card,containerAnimation:tween,start:'left center',end:'right center',
-      onUpdate:self=>{
-        const p=self.progress;const dist=Math.abs(p-0.5)*2;
-        gsap.set(card,{rotationY:(0.5-p)*46,scale:1-dist*0.12,filter:'brightness('+(0.62+(1-dist)*0.38)+')',zIndex:Math.round((1-dist)*10)});
-      }
-    });
+  if(!cards.length)return;
+  cards.forEach((card,i)=>{
+    gsap.from(card,{y:60,opacity:0,rotationX:16,rotationY:(i%2===0?-1:1)*9,scale:.86,duration:1.0,ease:'power3.out',
+      scrollTrigger:{trigger:card,start:'top 90%'}});
   });
 })();
 
