@@ -3,6 +3,7 @@
 > 电脑点击，手机自动拨号 -- 局域网 HTTP 直连安卓手机 App，桌面软件一键触发全自动拨号。
 
 [![多平台打包](https://github.com/JinXi-7/iphone-desktop-auto/actions/workflows/build.yml/badge.svg)](https://github.com/JinXi-7/iphone-desktop-auto/actions/workflows/build.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 ## 下载
 
@@ -225,3 +226,9 @@ iphone-desktop-auto/
 - v0.3.0 - Excel 批量导入 + 拨号历史记录
 - v0.2.0 - 联系人 CRUD + SQLite + 一键拨号（半自动模式）
 - v0.1.0 - 项目骨架：Flask 服务 + ADB 状态检测 + 快速拨号
+
+## 开源协议
+
+本项目基于 [MIT License](LICENSE) 开源,完全免费,可商用、可修改、可分发。商用无需授权,保留版权声明即可。
+
+> 「按原样」提供,不承担任何直接或间接责任。
