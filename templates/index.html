@@ -151,9 +151,12 @@
 
             if (data.mode === 'app') {
                 title.textContent = '手机 App 连接状态';
-                // 从 app_url 解析当前 IP 填入输入框
-                const match = data.app_url.match(/http:\/\/(\d+\.\d+\.\d+\.\d+)/);
-                if (match) document.getElementById('app-host-input').value = match[1];
+                // 仅在输入框为空时自动填充当前 IP，避免覆盖用户正在输入的内容
+                const ipInput = document.getElementById('app-host-input');
+                if (!ipInput.value.trim()) {
+                    const match = data.app_url.match(/http:\/\/(\d+\.\d+\.\d+\.\d+)/);
+                    if (match) ipInput.value = match[1];
+                }
                 if (data.connected) {
                     badge.className = 'badge bg-success';
                     badge.textContent = '已连接';
@@ -483,10 +486,29 @@
                         <span class="badge ${h.status === 'success' ? 'bg-success' : 'bg-danger'} me-2">${h.status === 'success' ? '成功' : '失败'}</span>
                         <span class="fw-bold">${escapeHtml(h.name)}</span>
                         <span class="text-muted ms-2"><i class="bi bi-telephone"></i> ${escapeHtml(h.phone)}</span>
+                        <span class="text-muted small ms-2">${h.dialed_at}</span>
                     </div>
-                    <div class="text-muted small">${h.dialed_at}</div>
+                    <button class="btn btn-outline-primary btn-sm" onclick="dialFromHistory('${escapeHtml(h.phone)}', '${escapeHtml(h.name)}')">
+                        <i class="bi bi-telephone-fill"></i> 拨号
+                    </button>
                 </div>
             `).join('');
+        }
+
+        // 从历史记录拨号
+        async function dialFromHistory(phone, name) {
+            try {
+                const res = await fetch('/api/dial', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ phone: phone, name: name })
+                });
+                const data = await res.json();
+                showDialResult(data.success, data.message);
+                fetchHistory();
+            } catch (e) {
+                showDialResult(false, '拨号请求失败: ' + e.message);
+            }
         }
 
         // 页面加载后立即检测状态，之后每 5 秒刷新

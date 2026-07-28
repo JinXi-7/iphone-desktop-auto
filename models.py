@@ -137,10 +137,20 @@ def add_dial_history(name: str, phone: str, status: str, message: str = "") -> N
 
 
 def get_dial_history(limit: int = 50) -> list[dict[str, Any]]:
-    """获取拨号历史记录。"""
+    """获取拨号历史记录（按号码去重，每个号码只保留最近一次）。"""
     conn = get_conn()
+    # 用 GROUP BY phone 去重，取每个号码最新的一条记录
     rows = conn.execute(
-        "SELECT * FROM dial_history ORDER BY id DESC LIMIT ?", (limit,)
+        "SELECT * FROM ("
+        "  SELECT *, ROW_NUMBER() OVER (PARTITION BY phone ORDER BY id DESC) AS rn "
+        "  FROM dial_history"
+        ") WHERE rn = 1 ORDER BY id DESC LIMIT ?",
+        (limit,),
     ).fetchall()
     conn.close()
-    return [dict(r) for r in rows]
+    result = []
+    for r in rows:
+        d = dict(r)
+        d.pop("rn", None)  # 移除内部排序字段
+        result.append(d)
+    return result
