@@ -75,11 +75,11 @@ jobs:
         shell: bash
         run: |
           if [ "$RUNNER_OS" = "Windows" ]; then
-            cd dist && 7z a ../../${{ matrix.artifact_name }}.zip 一键拨号
+            7z a "$GITHUB_WORKSPACE/${{ matrix.artifact_name }}.zip" ./dist/*
           elif [ "$RUNNER_OS" = "macOS" ]; then
-            cd dist && zip -r ../${{ matrix.artifact_name }}.zip 一键拨号.app
+            cd dist && zip -r "$GITHUB_WORKSPACE/${{ matrix.artifact_name }}.zip" 一键拨号.app
           else
-            cd dist && tar czf ../${{ matrix.artifact_name }}.tar.gz 一键拨号
+            cd dist && tar czf "$GITHUB_WORKSPACE/${{ matrix.artifact_name }}.tar.gz" 一键拨号
           fi
 
       - name: 上传产物
