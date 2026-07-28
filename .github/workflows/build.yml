@@ -15,11 +15,11 @@ jobs:
       matrix:
         include:
           - os: windows-latest
-            artifact_name: 一键拨号-windows
+            artifact_name: dialer-windows
           - os: macos-latest
-            artifact_name: 一键拨号-macos
+            artifact_name: dialer-macos
           - os: ubuntu-latest
-            artifact_name: 一键拨号-linux
+            artifact_name: dialer-linux
 
     steps:
       - uses: actions/checkout@v4
@@ -116,13 +116,13 @@ jobs:
 
       - name: 重命名 APK
         run: |
-          cp android-app/app/build/outputs/apk/debug/app-debug.apk 一键拨号-android.apk
+          cp android-app/app/build/outputs/apk/debug/app-debug.apk dialer-android.apk
 
       - name: 上传产物
         uses: actions/upload-artifact@v4
         with:
           name: 一键拨号-android
-          path: 一键拨号-android.apk
+          path: dialer-android.apk
 
   build-ios:
     runs-on: macos-latest
@@ -163,13 +163,13 @@ jobs:
           echo "找到 App: $APP_PATH"
           APP_DIR=$(dirname "$APP_PATH")
           cd "$APP_DIR"
-          zip -r ../../../../../一键拨号-ios.zip DialerApp.app
+          zip -r ../../../../../dialer-ios.zip DialerApp.app
 
       - name: 上传产物
         uses: actions/upload-artifact@v4
         with:
           name: 一键拨号-ios
-          path: 一键拨号-ios.zip
+          path: dialer-ios.zip
 
   release:
     needs: [build, build-android, build-ios]
@@ -189,20 +189,23 @@ jobs:
         with:
           tag_name: v1
           name: 最新构建
+          allow_overwrite: true
+          draft: false
+          prerelease: false
           body: |
             自动构建的最新产物，点击对应文件直接下载。
 
             | 平台 | 文件 |
             |------|------|
-            | Windows | 一键拨号-windows.zip |
-            | macOS | 一键拨号-macos.zip |
-            | Linux | 一键拨号-linux.tar.gz |
-            | Android | 一键拨号-android.apk |
-            | iOS | 一键拨号-ios.zip |
+            | Windows | dialer-windows.zip |
+            | macOS | dialer-macos.zip |
+            | Linux | dialer-linux.tar.gz |
+            | Android | dialer-android.apk |
+            | iOS | dialer-ios.zip |
           make_latest: true
           files: |
-            一键拨号-windows.zip
-            一键拨号-macos.zip
-            一键拨号-linux.tar.gz
-            一键拨号-android.apk
-            一键拨号-ios.zip
+            dialer-windows.zip
+            dialer-macos.zip
+            dialer-linux.tar.gz
+            dialer-android.apk
+            dialer-ios.zip
