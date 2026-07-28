@@ -18,7 +18,7 @@
         .container {
             background: #fff;
             border-radius: 24px;
-            max-width: 480px;
+            max-width: 500px;
             width: 100%;
             padding: 40px 30px;
             text-align: center;
@@ -35,24 +35,25 @@
             justify-content: center;
             font-size: 48px;
         }
-        h1 {
-            font-size: 24px;
-            color: #1a1a2e;
-            margin-bottom: 8px;
-        }
-        .subtitle {
-            color: #666;
+        h1 { font-size: 24px; color: #1a1a2e; margin-bottom: 8px; }
+        .subtitle { color: #666; font-size: 14px; margin-bottom: 30px; }
+        .section-title {
             font-size: 14px;
-            margin-bottom: 30px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 20px 0 12px;
+            text-align: left;
         }
         .platform-card {
             border: 2px solid #f0f0f0;
             border-radius: 16px;
             padding: 20px;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
             transition: all 0.3s;
             text-decoration: none;
             display: block;
+            text-align: left;
         }
         .platform-card:hover {
             border-color: #667eea;
@@ -61,34 +62,16 @@
         }
         .platform-card.android { border-left: 4px solid #3ddc84; }
         .platform-card.windows { border-left: 4px solid #00a4ef; }
+        .platform-card.macos { border-left: 4px solid #555; }
+        .platform-card.linux { border-left: 4px solid #f0a000; }
         .platform-card.ios { border-left: 4px solid #007aff; }
-        .platform-icon { font-size: 32px; margin-bottom: 8px; }
+        .platform-row { display: flex; align-items: center; gap: 16px; }
+        .platform-icon { font-size: 36px; }
+        .platform-info { flex: 1; }
         .platform-name { font-size: 16px; font-weight: 600; color: #1a1a2e; }
-        .platform-desc { font-size: 13px; color: #888; margin-top: 4px; }
+        .platform-desc { font-size: 13px; color: #888; margin-top: 2px; }
         .platform-size { font-size: 12px; color: #aaa; margin-top: 2px; }
-        .download-btn {
-            display: inline-block;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: #fff;
-            text-decoration: none;
-            padding: 12px 40px;
-            border-radius: 30px;
-            font-size: 16px;
-            font-weight: 600;
-            margin-top: 8px;
-            transition: all 0.3s;
-        }
-        .download-btn:hover { transform: scale(1.05); box-shadow: 0 6px 20px rgba(102,126,234,0.4); }
-        .instructions {
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid #f0f0f0;
-            text-align: left;
-        }
-        .instructions h3 { font-size: 14px; color: #1a1a2e; margin-bottom: 12px; }
-        .instructions ol { padding-left: 20px; }
-        .instructions li { font-size: 13px; color: #666; margin-bottom: 6px; line-height: 1.6; }
-        .footer { margin-top: 24px; font-size: 12px; color: #ccc; }
+        .platform-arrow { font-size: 20px; color: #ccc; }
         .badge {
             display: inline-block;
             background: #3ddc84;
@@ -99,55 +82,107 @@
             margin-left: 6px;
             vertical-align: middle;
         }
+        .instructions {
+            margin-top: 28px;
+            padding-top: 20px;
+            border-top: 1px solid #f0f0f0;
+            text-align: left;
+        }
+        .instructions h3 { font-size: 14px; color: #1a1a2e; margin-bottom: 12px; }
+        .instructions ol { padding-left: 20px; }
+        .instructions li { font-size: 13px; color: #666; margin-bottom: 6px; line-height: 1.6; }
+        .footer { margin-top: 24px; font-size: 12px; color: #ccc; }
+        .footer a { color: #aaa; }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="logo">📞</div>
         <h1>一键拨号助手</h1>
-        <p class="subtitle">电脑点击，手机自动拨号 — 局域网互联，无需开发者模式</p>
+        <p class="subtitle">电脑点击，手机自动拨号 - 局域网互联，无需开发者模式</p>
 
-        <!-- 安卓下载 -->
+        <!-- 手机端 -->
+        <div class="section-title">📱 手机端</div>
+
         <a href="一键拨号助手.apk" download class="platform-card android">
-            <div class="platform-icon">🤖</div>
-            <div class="platform-name">安卓 Android <span class="badge">推荐</span></div>
-            <div class="platform-desc">直接下载安装，支持所有安卓手机</div>
-            <div class="platform-size">APK · 5.4 MB · 点击下载</div>
+            <div class="platform-row">
+                <div class="platform-icon">🤖</div>
+                <div class="platform-info">
+                    <div class="platform-name">安卓 Android <span class="badge">推荐</span></div>
+                    <div class="platform-desc">点击直接下载 APK，安装即用</div>
+                    <div class="platform-size">APK · 5.4 MB</div>
+                </div>
+                <div class="platform-arrow">⬇</div>
+            </div>
         </a>
 
-        <!-- Windows 下载 -->
-        <a href="https://github.com/JinXi-7/iphone-desktop-auto/actions/workflows/build.yml" target="_blank" class="platform-card windows">
-            <div class="platform-icon">💻</div>
-            <div class="platform-name">Windows 电脑端</div>
-            <div class="platform-desc">点击前往 GitHub 下载 Windows 版</div>
-            <div class="platform-size">EXE · 约 35 MB</div>
-        </a>
-
-        <!-- iOS 下载 -->
         <a href="https://github.com/JinXi-7/iphone-desktop-auto/actions/workflows/build.yml" target="_blank" class="platform-card ios">
-            <div class="platform-icon">🍎</div>
-            <div class="platform-name">iOS iPhone 版</div>
-            <div class="platform-desc">需用 Xcode 或 AltStore 侧载安装</div>
-            <div class="platform-size">APP · 约 1 MB</div>
+            <div class="platform-row">
+                <div class="platform-icon">🍎</div>
+                <div class="platform-info">
+                    <div class="platform-name">iOS iPhone 版</div>
+                    <div class="platform-desc">需用 Xcode 或 AltStore 侧载安装</div>
+                    <div class="platform-size">APP · 约 1 MB</div>
+                </div>
+                <div class="platform-arrow">⬇</div>
+            </div>
+        </a>
+
+        <!-- 电脑端 -->
+        <div class="section-title">💻 电脑端</div>
+
+        <a href="https://github.com/JinXi-7/iphone-desktop-auto/actions/workflows/build.yml" target="_blank" class="platform-card windows">
+            <div class="platform-row">
+                <div class="platform-icon">💻</div>
+                <div class="platform-info">
+                    <div class="platform-name">Windows 电脑端</div>
+                    <div class="platform-desc">下载 zip 解压后双击 exe 运行</div>
+                    <div class="platform-size">EXE · 约 35 MB</div>
+                </div>
+                <div class="platform-arrow">⬇</div>
+            </div>
+        </a>
+
+        <a href="https://github.com/JinXi-7/iphone-desktop-auto/actions/workflows/build.yml" target="_blank" class="platform-card macos">
+            <div class="platform-row">
+                <div class="platform-icon">🖥️</div>
+                <div class="platform-info">
+                    <div class="platform-name">macOS 苹果电脑</div>
+                    <div class="platform-desc">解压后拖到「应用程序」文件夹</div>
+                    <div class="platform-size">APP · 约 47 MB</div>
+                </div>
+                <div class="platform-arrow">⬇</div>
+            </div>
+        </a>
+
+        <a href="https://github.com/JinXi-7/iphone-desktop-auto/actions/workflows/build.yml" target="_blank" class="platform-card linux">
+            <div class="platform-row">
+                <div class="platform-icon">🐧</div>
+                <div class="platform-info">
+                    <div class="platform-name">Linux</div>
+                    <div class="platform-desc">解压后终端运行，需 GTK 支持</div>
+                    <div class="platform-size">BIN · 约 29 MB</div>
+                </div>
+                <div class="platform-arrow">⬇</div>
+            </div>
         </a>
 
         <div class="instructions">
-            <h3>📋 安装步骤（安卓）</h3>
+            <h3>📋 安装步骤</h3>
             <ol>
-                <li>点击上方「安卓 Android」下载 APK 文件</li>
-                <li>下载完成后点击安装</li>
-                <li>如果提示「未知来源应用」，点击「允许」</li>
-                <li>打开 App，点击「启动服务」</li>
-                <li>授权拨号权限和通知权限</li>
-                <li>记下 App 显示的 IP 地址</li>
-                <li>在电脑端软件中输入该 IP，点击连接</li>
-                <li>连接成功后即可一键拨号 🎉</li>
+                <li><strong>手机：</strong>下载并安装对应 App，打开后点「启动服务」</li>
+                <li><strong>手机：</strong>授权拨号权限和通知权限，记下显示的 IP 地址</li>
+                <li><strong>电脑：</strong>下载并打开电脑端软件</li>
+                <li><strong>电脑：</strong>在界面输入手机 IP，点「连接」</li>
+                <li><strong>电脑：</strong>导入 Excel 电话表或手动添加联系人</li>
+                <li>点击联系人或历史记录的拨号按钮，手机自动拨号 🎉</li>
             </ol>
+            <p style="margin-top:12px;font-size:12px;color:#999;">⚠️ 手机和电脑需连接同一个 WiFi 网络</p>
         </div>
 
         <div class="footer">
-            版本 v1.0 · 更新于 2026-07<br>
-            <a href="https://github.com/JinXi-7/iphone-desktop-auto" style="color:#aaa;">GitHub 仓库</a>
+            版本 v1.1 · 更新于 2026-07<br>
+            <a href="https://github.com/JinXi-7/iphone-desktop-auto">GitHub 仓库</a>
         </div>
     </div>
 </body>
